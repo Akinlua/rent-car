@@ -1,0 +1,174 @@
+
+<head>
+    <style>
+        
+        /* Flex container styles */
+        .flex-container {
+          display: flex;
+          justify-content: space-between;
+          padding: 10px; /* Add padding for space around the anchors */
+        }
+    
+        /* Anchor tag styles */
+        .anchor {
+          text-decoration: none;
+          padding: 8px 12px;
+        }
+
+ /* Styling for the overlay background */
+ .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+    }
+
+    /* Styling for the modal */
+    .modal {
+      position: static;
+      width: 100%;
+      height: 120px;
+        justify-content: center;
+      display: flex; /* Corrected from previous version */
+      background: #fff;
+      max-width: 400px;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    /* Styling for buttons inside the modal */
+    .modal button {
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+    }
+      </style>
+</head>
+<section class="hero-wrap hero-wrap-2 js-fullheight" style="background-image: url('images/bg_3.jpg');" data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row no-gutters slider-text js-fullheight align-items-end justify-content-start">
+        <div class="col-md-9 ftco-animate pb-5">
+            <p class="breadcrumbs"><span class="mr-2"><a href="/">Home <i class="ion-ios-arrow-forward"></i></a></span> <span>Cars <i class="ion-ios-arrow-forward"></i></span></p>
+          <h1 class="mb-3 bread">Choose Your Car</h1>
+        </div>
+      </div>
+    </div>
+  </section>
+     
+
+      <section class="ftco-section bg-light" id="cars_">
+      <div class="container">
+        <p style="color: red;"><%= error %></p>
+
+          <div class="row">
+            <% cars.forEach(car => { %>
+                <div class="col-md-4">
+                    <div class="car-wrap rounded ftco-animate">
+                        <div class="img rounded d-flex align-items-end" style="background-image: url('<%= car.pic_path %>');">
+                        </div>
+                        <div class="text">
+                            <h2 class="mb-0"><a href="/car/<%= car._id %>"><%= car.name %></a></h2>
+                            <div class="d-flex mb-3">
+                                <span class="cat"><%= car.company %></span>
+                                <p class="price ml-auto">$<%= car.price_per_day %> <span>/day</span></p>
+                            </div>
+                            <p class="d-flex mb-0 d-block"><a href="/rent/<%= car._id %>" class="btn btn-primary py-2 mr-1">Rent now</a> <a href="/car/<%= car._id %>" class="btn btn-secondary py-2 ml-1">Details</a></p>
+                            
+                        </div>   
+                        <% if (user != null) { %>
+                          <% if (user.admin == true) { %>
+                            <div class="flex-container">
+                              <a href="/edit-car/<%= car._id %>"  class="anchor">Edit</a>
+                              <a href="#cars_" style="color: red;" onclick="openModal('<%=car._id %>')" class="anchor">Delete</a>
+                          </div>    
+                          <% } %>
+                        <% } %>  
+                    </div>
+                </div>
+                
+            <% }) %>
+              
+          </div>
+          <div class="row mt-5">
+        
+        <% if (noOfPages > 1) { %>
+             
+        <div class="col text-center">
+          <div class="block-27">
+            <ul>
+                <% if (hasPrevPage == true) { %>
+                    <li><a  href="/car?page=<%= prevPage %>#cars_">&lt;</a></li>
+                <% } %>
+                <% for( let i = 0; i < noOfPages; i++ ) { %>
+                    <% if (page == i +1) { %>
+                        <li class="active"><a href="/car?page=<%= i + 1 %>#cars_"><span><%= i + 1 %></span></a></li>
+                    <% } else {%>
+                        <li><a href="/car?page=<%= i + 1 %>#cars_"><%= i + 1 %></a></li>
+                    <% } %>
+                <% } %>
+                <% if (hasNextPage == true) { %>
+                    <li><a href="/car?page=<%= nextPage %>#cars_">&gt;</a></li>
+                <% } %>
+            </ul>
+          </div>
+        </div>
+        <% } %>
+
+
+
+      </div>
+      </div>
+
+ 
+
+  </section>
+
+
+  <!-- Modal HTML -->
+  <div class="overlay" id="modalOverlay">
+    <div class="modal"  id="modalContent">
+    <input type="hidden" id="hiddenInput" value="">
+
+      <p>Are you sure you want to delete?</p>
+      <form id="modalform" method="post">
+         <button class="btn btn-primary py-2 mr-1" type="submit" onclick="deleteItem()">Yes</button>
+      </form>
+      <form aria-disabled="true">
+        <button class="btn btn-primary py-2"  onclick="closeModal()">No</button>
+      </form>
+    </div>
+  </div>
+  
+  
+  
+
+  <!-- JavaScript to control the modal -->
+  <script>
+    function openModal(hiddenId) {
+        // Set the hidden input value
+      document.getElementById('hiddenInput').value = hiddenId;
+
+      document.getElementById('modalform').action = `/delete-car/${hiddenId}?_method=DELETE`;
+
+      document.getElementById('modalOverlay').style.display = 'flex';
+
+    }
+    
+    function closeModal() {
+      document.getElementById('modalOverlay').style.display = 'none';
+    }
+
+    function deleteItem() {
+      console.log('Hidden value:', hiddenValue);
+      closeModal()
+    }
+
+  </script>

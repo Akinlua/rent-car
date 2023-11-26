@@ -1,0 +1,68 @@
+   
+    <section class="hero-wrap hero-wrap-2 js-fullheight" style="background-image: url('images/bg_3.jpg');" data-stellar-background-ratio="0.5">
+        <div class="overlay"></div>
+        <div class="container">
+          <div class="row no-gutters slider-text js-fullheight align-items-end justify-content-start">
+            <div class="col-md-9 ftco-animate pb-5">
+                <p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home <i class="ion-ios-arrow-forward"></i></a></span> <span>Rented Cars <i class="ion-ios-arrow-forward"></i></span></p>
+              <h1 class="mb-3 bread">All Rented Cars</h1>
+            </div>
+          </div>
+        </div>
+      </section>
+  
+      <section class="ftco-section">
+        <div class="container">
+          <div class="row d-flex justify-content-center">
+            <% form.forEach(f => { %>
+                        
+            <div class="col-md-12 text-center d-flex ftco-animate">
+                <div class="blog-entry justify-content-end mb-md-5">
+              <p>Date Created: <%= f.date %></p>
+
+                <a href="/car/<%= f.carId %>" class="block-20 img" style="background-image: url('<%= f.pic_path  %>');">
+                </a>
+                <div class="text px-md-5 pt-4">
+                    <div class="meta mb-3">
+                    <div><a href="#">Pickup Date- <%= f.pickup_date %>: <%= f.pickup_time %> | DropOff Date- <%= f.dropoff_date %> :  <%= f.dropoff_time %> </a></div>
+                    <div><a href="#">DropOff Location: <%= f.dropoff_loc%></a></div>
+                  </div>
+                  <h3 class="heading mt-2"><a href="/car/<%= f.carId %>"><%= f.car_name %></a></h3>
+                  <h3>Payment: <%= f.type %>, $<%= f.total_charge / f.type_rate %>/
+                    <% if (f.type == "hourly") { %>
+                     per hour
+                    <% } %>
+                    <% if (f.type == "daily") { %>
+                      per day
+                     <% } %>
+                     <% if (f.type == "lease") { %>
+                      per month
+                     <% } %>
+                  </h3>
+                  <h3>Total Charge: $<%= f.total_charge %></h3>
+                  <p><%= f['car_description'] %></p>
+                  <p><a href="/rent/<%= f.carId %>?pickup_loc=<%= f.pickup_loc %>&dropoff_loc=<%= f.dropoff_loc %>&type=<%= f.type %>&type_rate=<%= f.type_rate %>" class="btn btn-primary">Rent Again <span class="icon-long-arrow-right"></span></a></p>
+                </div>
+              </div>
+            </div>
+
+            <% }) %>
+            
+          </div>
+          <div class="row mt-5">
+            <div class="col text-center">
+              <div class="block-27">
+                <ul>
+                  <li><a href="#">&lt;</a></li>
+                  <li class="active"><span>1</span></li>
+                  <li><a href="#">2</a></li>
+                  <li><a href="#">3</a></li>
+                  <li><a href="#">4</a></li>
+                  <li><a href="#">5</a></li>
+                  <li><a href="#">&gt;</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>

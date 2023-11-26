@@ -1,0 +1,163 @@
+
+
+<section class="hero-wrap hero-wrap-2 js-fullheight" style="background-image: url('../../images/bg_3.jpg');" data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row no-gutters slider-text js-fullheight align-items-end justify-content-start">
+        <div class="col-md-9 ftco-animate pb-5">
+            <p class="breadcrumbs"><span class="mr-2"><a href="/">Home <i class="ion-ios-arrow-forward"></i></a></span> <span>Post A Car <i class="ion-ios-arrow-forward"></i></span></p>
+          <h1 class="mb-3 bread">Edit A Car <p style="color: red;"><% if (error) { %>
+            Error Submitting form
+           <% } %></p></h1>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ftco-section contact-section" id="car_">
+    <div class="container">
+      <div class="row d-flex mb-5 contact-info">
+          <div class="col-md-4">
+              <div class="row mb-5">
+                <div class="col-md-12">
+                    <div class="border w-100 p-4 rounded mb-2 d-flex">
+                        <div class="icon mr-3">
+                            <span class="icon-map-o"></span>
+                        </div>
+                      <p><span>Address:</span> 198 West 21th Street, Suite 721 New York NY 10016</p>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="border w-100 p-4 rounded mb-2 d-flex">
+                        <div class="icon mr-3">
+                            <span class="icon-mobile-phone"></span>
+                        </div>
+                      <p><span>Phone:</span> <a href="tel://1234567920">+ 1235 2355 98</a></p>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="border w-100 p-4 rounded mb-2 d-flex">
+                        <div class="icon mr-3">
+                            <span class="icon-envelope-o"></span>
+                        </div>
+                      <p><span>Email:</span> <a href="mailto:info@yoursite.com">info@yoursite.com</a></p>
+                    </div>
+                </div>
+              </div>
+        </div>
+        <div class="col-md-8 block-9 mb-md-5">
+          
+          <form action="/edit-car/<%= car._id %>?_method=PATCH" method="post" enctype="multipart/form-data" class="bg-light p-5 contact-form">
+            <p style="color: red;"><%= error %></p><br>
+            <div class="form-group">
+                
+              <input type="text" name="name" class="form-control" 
+              <% if (name) { %>
+                value="<%= name %>"
+                <% } else {%>
+                value="<%= car.name %>"   
+              <% } %>
+              placeholder="Name of Car *" required>
+            </div>
+            <div class="form-group">
+              <input type="text" name="company" class="form-control" 
+              <% if (company) { %>
+                value="<%= company %>"
+              <% } else {%>
+                value="<%= car.company %>"    
+              <% } %>
+               placeholder="Car Company Name *" required>
+            </div>
+            
+            <div class="d-flex">
+                <div class="form-group mr-2">
+                    <input type="number" name="price_hr" 
+                    <% if (price_hr) { %>
+                        value="<%= price_hr %>" 
+                    <% } else {%>
+                        value="<%= car.price_per_hour %>"    
+                    <% } %>
+                    class="form-control" placeholder="Price per hour">
+                </div>
+                <div class="form-group ml-2">
+                    <input type="number" name="price_day" 
+                    <% if (price_day) { %>
+                        value="<%= price_day %>"
+                    <% } else {%>
+                        value="<%= car.price_per_day %>"    
+                    <% } %>
+                    class="form-control" placeholder="Price per day">
+                </div>
+                <div class="form-group ml-3">
+                    <input type="number" name="price_lease" 
+                    <% if (price_lease) { %>
+                        value="<%= price_lease %>"
+                    <% } else {%>
+                        value="<%= car.price_per_lease %>"  
+                    <% } %>
+                    class="form-control" placeholder="Price per Lease">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <input type="text" name="transmission" 
+                <% if (transmission) { %>
+                    value="<%= transmission %>"
+                <% } else {%>
+                    value="<%= car.transmission %>"  
+                <% } %>
+                class="form-control" placeholder="Transmission">
+            </div>
+            <div class="form-group">
+                <input type="text" name="seats" 
+                <% if (seats) { %>
+                    value="<%= seats %>"
+                <% } else {%>
+                    value="<%= car.seats %>"
+                <% } %>
+                class="form-control" placeholder="Seats">
+            </div>
+            <div class="form-group">
+                <input type="text" name="mileage" 
+                <% if (mileage) { %>
+                    value="<%= mileage %>"
+                <% } else {%>
+                    value="<%= car.mileage %>"
+                <% } %>
+                class="form-control" placeholder="Mileage">
+            </div>
+            <div class="form-group">
+                <input type="text" name="fuel" 
+                <% if (fuel) { %>
+                    value="<%= fuel %>"
+                <% } else {%>
+                    value="<%= car.fuel %>"
+                <% } %>
+                class="form-control" placeholder="Fuel">
+            </div>
+            <div class="form-group">
+                <input type="text" name="features" 
+                <% if (features) { %>
+                    value="<%= features %>"
+                <% } else {%>
+                    value="<%= car.features %>"
+                <% } %>
+                class="form-control" placeholder="Features">
+            </div>
+            <div class="form-group">
+                <input type="file" name="file"  class="form-control">
+                <input type="text" disabled placeholder="Selected Image: <%= car.pic_originalname %>" style="width: 500px;">
+            </div>
+            <div class="form-group">
+                <textarea id="" name="description" cols="30" rows="7" class="form-control" placeholder="Description"><% if (description) { %><%= description %><% } else {%><%= car.description %><% } %></textarea>
+            </div>
+
+            <div class="form-group">
+              <input type="submit" class="btn btn-primary py-3 px-5">
+            </div>
+          </form>
+        
+        </div>
+      </div>
+    </div>
+  </section>
