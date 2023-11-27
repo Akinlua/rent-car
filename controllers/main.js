@@ -6,7 +6,7 @@ const adminLayout = '../views/layouts/admin.ejs'
 const jwt = require('jsonwebtoken')
 const User = require('../model/User')
 const Car = require('../model/car')
-const {pagination, isDateWithinRange, isTimeWithinRange, addDaysToDate, addHoursToTime, getDate, changeToInt} = require('../middleware/helper')
+const {pagination, isDateWithinRange, isTimeWithinRange, addDaysToDate, addHoursToTime, getDate, getDatesBetween, changeToInt, hours_in_a_day, todayDate} = require('../middleware/helper')
 const Form = require('../model/Form')
 const {auth} = require('../middleware/authentication')
 
@@ -165,6 +165,21 @@ const contact = async (req, res) => {
     })
 }
 
+const findAvailableTime = async (date, id) => {
+    const form_today = await Form.find({carId: id, type: "hourly", pickup_date: date})
+    let time_list_today = await hours_in_a_day() // get all time for each date
+    let not_available_time = []
+    for(const form of form_today){
+        // check if time is in each form range and remove time from time list
+        for(const time of time_list_today){
+            const check = await isTimeWithinRange(time, form.pickup_time, form.type_rate)
+            if(check == true)  not_available_time.push(time)
+        }
+    }
+    const final_time_today_list = time_list_today.filter(value => !not_available_time.includes(value));
+    return final_time_today_list
+}
+
 const rent = async (req, res) => {
     const {is_user, is_admin } = await CheckAuth(req, res)
 
@@ -173,6 +188,40 @@ const rent = async (req, res) => {
     if(!car){
         return res.render("error-404", {layout: noLayout})
     }
+
+    // get used / disable date
+    let disable_dates = []
+    const form_lease = await Form.find({carId: id, type: { $in: ['lease', 'daily']} })
+    for(const form of form_lease){
+        const get_dates = await getDatesBetween(form.pickup_date, form.dropoff_date)
+        disable_dates.push(...get_dates)
+    }
+
+    // save all date that are hourly form
+    const time_list_dates = []
+    const form_hourly = await Form.find({carId: id, type: "hourly"})
+    for(const form of form_hourly){
+        time_list_dates.push(form.pickup_date)
+    }
+
+    // check if a houlry date is not available
+    for(const date of time_list_dates){
+        const form_hourly = await Form.find({carId: id, type: "hourly", pickup_date: date})
+        const time_list = await hours_in_a_day() // get all time for each date
+        let not_available = []
+        for(const form of form_hourly){
+            // check if time is in each form range and remove time from time list
+            for(const time of time_list){
+                const check = await isTimeWithinRange(time, form.pickup_time, form.type_rate)
+                if(check == true) not_available.push(time)
+            }
+            if(not_available.length >= time_list.length) disable_dates.push(form.pickup_date)
+        }
+    }
+
+    //for today find all available time
+    const today_date = await todayDate()
+    const final_time_today_list = await findAvailableTime("11/22/2023", id)
 
     let error, pickup_loc, type, type_rate, pickup_date, dropoff_loc, pickup_time = ""
 
@@ -193,13 +242,18 @@ const rent = async (req, res) => {
     if(req.query.type_rate) type_rate = req.query.type_rate
     if(req.query.dropoff_loc) dropoff_loc = req.query.dropoff_loc
 
+    let available_time_date
+    if(pickup_date && !disable_dates.includes(pickup_date)){
+        available_time_date = await findAvailableTime(pickup_date, id)
+    }
+    // console.log(disable_dates, final_time_today_list, available_time_date)
     res.render('rent', {
         is_admin, is_user,
         title: "Rent",
         layout: navLayout,
         stripePublickey, car,error, 
         pickup_loc, type, type_rate, 
-        pickup_date, dropoff_loc, pickup_time
+        pickup_date, dropoff_loc, pickup_time, disable_dates, final_time_today_list, available_time_date
     })
 }
 

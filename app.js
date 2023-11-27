@@ -10,7 +10,7 @@ const mainRouter = require('./routes/main')
 const userRouter = require('./routes/user')
 const methodOverride = require('method-override')
 // const {authMiddleware} = require('./middleware/authentication.js')
-const {isDateWithinRange, isTimeWithinRange, addDaysToDate, addHoursToTime} = require('./middleware/helper')
+const {isDateWithinRange, isTimeWithinRange, addDaysToDate, addHoursToTime, getDatesBetween, hours_in_a_day, todayDate} = require('./middleware/helper')
 
 const cookieParser = require('cookie-parser')
 
@@ -62,11 +62,8 @@ const port = process.env.PORT || 3000
 const start = async () => {
     try{
         //connect DB
-        // const check = await addDaysToDate('11/21/2023', 1)
-        const check = await addHoursToTime('13:00', 1)
-        const check2 = await addHoursToTime(check, 1)
-        
-        console.log(check, check2)
+        const check = await isTimeWithinRange('16:00', '12:00', 3)
+        console.log(check)
         await connectDB()
         console.log("Connected to DB")
         app.listen(port, "0.0.0.0", console.log(`Server is listening to port ${port}`))

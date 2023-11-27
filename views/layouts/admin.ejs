@@ -30,8 +30,8 @@
       <!-- partial:partials/_sidebar.html -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-          <a class="sidebar-brand brand-logo" href="../../index.html"><img src="../../assets/images/logo.svg" alt="logo" /></a>
-          <a class="sidebar-brand brand-logo-mini" href="../../index.html"><img src="../../assets/images/logo-mini.svg" alt="logo" /></a>
+          <a class="sidebar-brand brand-logo" href="/"><img src="../../assets/images/logo.svg" alt="logo" /></a>
+          <a class="sidebar-brand brand-logo-mini" href="/"><img src="../../assets/images/logo-mini.svg" alt="logo" /></a>
           <!-- <a class="navbar-brand" href="/">Car<span>Book</span></a> -->
         </div>
         <ul class="nav">
@@ -48,6 +48,16 @@
           <li class="nav-item nav-category">
             <span class="nav-link">Navigation</span>
           </li>
+          <% var activity1, activity2, activity3 = ''  %>
+          <% if (title == 'Admin') { %>
+            <% var activity1 = 'active' %>
+          <% } %>
+          <% if (title == 'Users Page') { %>
+            <% var activity2 = 'active' %>
+          <% } %>
+          <% if (title == 'Pricing') { %>
+            <% var activity4 = 'active' %>
+          <% } %>
           <li class="nav-item menu-items">
             <a class="nav-link" href="/">
               <span class="menu-icon">
@@ -56,12 +66,20 @@
               <span class="menu-title">Go Home</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items <%= activity2 %>">
             <a class="nav-link" href="/admin/all-users">
               <span class="menu-icon">
                 <i class="mdi mdi-speedometer"></i>
               </span>
               <span class="menu-title">Registered Users</span>
+            </a>
+          </li>
+          <li class="nav-item menu-items <%= activity1 %>">
+            <a class="nav-link" href="/admin">
+              <span class="menu-icon">
+                <i class="mdi mdi-speedometer"></i>
+              </span>
+              <span class="menu-title">All Rents</span>
             </a>
           </li>
          

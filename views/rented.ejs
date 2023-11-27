@@ -11,8 +11,12 @@
         </div>
       </section>
   
+       
+     
       <section class="ftco-section">
         <div class="container">
+      <% if (form.length > 0) { %>
+
           <div class="row d-flex justify-content-center">
             <% form.forEach(f => { %>
                         
@@ -28,7 +32,7 @@
                     <div><a href="#">DropOff Location: <%= f.dropoff_loc%></a></div>
                   </div>
                   <h3 class="heading mt-2"><a href="/car/<%= f.carId %>"><%= f.car_name %></a></h3>
-                  <h3>Payment: <%= f.type %>, $<%= f.total_charge / f.type_rate %>/
+                  <h3>Payment: <%= f.type %>, $<%= (f.total_charge /100) / f.type_rate %>/
                     <% if (f.type == "hourly") { %>
                      per hour
                     <% } %>
@@ -39,7 +43,7 @@
                       per month
                      <% } %>
                   </h3>
-                  <h3>Total Charge: $<%= f.total_charge %></h3>
+                  <h3>Total Charge: $<%= (f.total_charge /100) %>(<a href="<%= f.receiptUrl %>">receipt</a>)</h3>
                   <p><%= f['car_description'] %></p>
                   <p><a href="/rent/<%= f.carId %>?pickup_loc=<%= f.pickup_loc %>&dropoff_loc=<%= f.dropoff_loc %>&type=<%= f.type %>&type_rate=<%= f.type_rate %>" class="btn btn-primary">Rent Again <span class="icon-long-arrow-right"></span></a></p>
                 </div>
@@ -49,20 +53,8 @@
             <% }) %>
             
           </div>
-          <div class="row mt-5">
-            <div class="col text-center">
-              <div class="block-27">
-                <ul>
-                  <li><a href="#">&lt;</a></li>
-                  <li class="active"><span>1</span></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li><a href="#">4</a></li>
-                  <li><a href="#">5</a></li>
-                  <li><a href="#">&gt;</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
+          <% } else { %>
+            <h4>You have no rented Cars</h4>
+          <% } %>
         </div>
       </section>

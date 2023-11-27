@@ -34,7 +34,26 @@ border-radius: 4px;
 cursor: pointer;
 
     }
+
+    
+.number-container {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.number-box {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adding a subtle box shadow for elevation */
+}
   </style>
+  <script>
+      var disable_dates = '<%= disable_dates%>'
+
+  </script>
   
 </head>
 
@@ -43,8 +62,6 @@ cursor: pointer;
     <div class="container">
       <div class="row no-gutters slider-text js-fullheight align-items-end justify-content-start">
         <div class="col-md-9 ftco-animate pb-5">
-            <p class="breadcrumbs"><span class="mr-2"><a href="/">Home <i class="ion-ios-arrow-forward"></i></a></span> <span>Rent <i class="ion-ios-arrow-forward"></i></span></p>
-          <h1 class="mb-3 bread">Rent A car</h1>
         </div>
       </div>
     </div>
@@ -60,18 +77,18 @@ cursor: pointer;
                         <p style="color: red;"><%= error %></p>
                       <h2>Make your trip</h2>
                             <div class="form-group">
-                                <label for="" class="label">Pick-up location</label>
-                                <input type="text" name="pickup_loc" value="<%= pickup_loc %>" class="form-control" placeholder="City, Airport, Station, etc">
+                                <label for="" class="label">Pick-up location *</label>
+                                <input type="text" name="pickup_loc" value="<%= pickup_loc %>" class="form-control" placeholder="City, Airport, Station, etc" required>
                             </div>
                             <div class="form-group">
-                                <label for="" class="label">Drop-off location</label>
-                                <input type="text" name="dropoff_loc" value="<%= dropoff_loc %>" class="form-control" placeholder="City, Airport, Station, etc">
+                                <label for="" class="label">Drop-off location *</label>
+                                <input type="text" name="dropoff_loc" value="<%= dropoff_loc %>" class="form-control" placeholder="City, Airport, Station, etc" required>
                             </div>
                             
                             <div class="d-flex">
                                 <div class="form-group mr-2">
-                                    <label for="" class="label">Rate</label>
-                                    <select  name="type" class="form-control" id="exampleSelectGender">
+                                    <label for="" class="label">Rate *</label>
+                                    <select  name="type" class="form-control" id="exampleSelectGender" required>
                                       <option><%= type %></option>
                                       <% if (car.price_per_hour) { %>
                                         <option style="color: black;">hourly</option>
@@ -83,14 +100,14 @@ cursor: pointer;
                                     </select>                                
                                 </div>
                                 <div class="form-group ml-2">
-                                    <label for="" class="label">How Long</label>
-                                    <input type="number" name="type_rate" value="<%= type_rate %>" class="form-control" placeholder="Length of use">
+                                    <label for="" class="label">How Long *</label>
+                                    <input type="number" name="type_rate" value="<%= type_rate %>" class="form-control" placeholder="Length of use" required>
                                 </div>
                             </div>
                             <div class="d-flex">
                                 <div class="form-group mr-2">
-                        <label for="" class="label">Pick-up date</label>
-                        <input type="text"  name="pickup_date" value="<%= pickup_date %>"  class="form-control" id="book_pick_date" placeholder="Date">
+                        <label for="" class="label">Pick-up date *</label>
+                        <input type="text" name="pickup_date" value="<%= pickup_date %>"  class="form-control" id="book_pick_date" placeholder="Date" required>
                       </div>
                       <!-- <div class="form-group ml-2">
                         <label for="" class="label">Drop-off date</label>
@@ -98,8 +115,8 @@ cursor: pointer;
                       </div> -->
                   </div>
                   <div class="form-group">
-                    <label for="" class="label">Pick-up time</label>
-                    <input type="time" name="pickup_time" value="<%= pickup_time %>" class="form-control"  placeholder="Time">
+                    <label for="" class="label">Pick-up time *</label>
+                    <input type="time" name="pickup_time" value="<%= pickup_time %>" class="form-control"  placeholder="Time" required>
                   </div>
                   <label for="" class="label">Fill in your Card details</label>
                   <div   style="margin-bottom: 20px;" id="card-element" class="form-input">
@@ -110,37 +127,39 @@ cursor: pointer;
                     </div>
                         </form>
                       </div>
+
                       <div class="col-md-8 d-flex align-items-center">
                           <div class="services-wrap rounded-right w-100">
                               <h3 class="heading-section mb-4">Rent <%= car.name %> Now</h3>
-                              <div class="row d-flex mb-4">
-                          <div class="col-md-4 d-flex align-self-stretch ftco-animate">
-                            <div class="services w-100 text-center">
-                              <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-route"></span></div>
-                              <div class="text w-100">
-                                <h3 class="heading mb-2">Choose Your Pickup Location</h3>
-                            </div>
-                            </div>      
-                          </div>
-                          <div class="col-md-4 d-flex align-self-stretch ftco-animate">
-                            <div class="services w-100 text-center">
-                              <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-handshake"></span></div>
-                              <div class="text w-100">
-                                <h3 class="heading mb-2">Select the Best Deal</h3>
-                              </div>
-                            </div>      
-                          </div>
-                          <div class="col-md-4 d-flex align-self-stretch ftco-animate">
-                            <div class="services w-100 text-center">
-                              <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-rent"></span></div>
-                              <div class="text w-100">
-                                <h3 class="heading mb-2">Reserve Your Rental Car</h3>
-                              </div>
-                            </div>      
-                          </div>
+                             <p>You will be charged based on the Rate and length of use. Below is this car pricing: $<%= car.price_per_hour %> / per hour <b style="color: black;">|</b> $<%= car.price_per_day %> / per day <b style="color: black;">|</b> $<%= car.price_per_lease %> / per month</p>
+                             <p></p>
+                             <p></p>
+                             <p></p>
+                            <h5>Follow the Below Instructions to fill in the form correctly</h5>
+                            <ul>
+                              <li>All fileds with * in front must be filled </li>
+                              <li>The pick up dates that are disabled in the calendar are not available. Also note that if you for example, pick an available date, but your length of use overlaps to the dates unavailable, you won't be able to rent within that length of time and will have to pick another date or length of use</li>
+                              <li>For hourly rate, You can select anytime within the available date. If an error shows that the time is not available, check below to see available time for the date you picked. </li>
+                            </ul>
+                          <h4>List of available time today</h4>
+                          <div class="number-container">
+                            <% final_time_today_list.forEach(time => { %>
+                            <div class="number-box"><%= time %></div>
+                            <% }) %>
+                            <!-- Add more values as needed -->
                         </div>
-                        <p><a href="../../#" class="btn btn-primary py-3 px-4">Reserve Your Perfect Car</a></p>
+
+                          <% if (pickup_date && available_time_date) { %>
+                            <h4 style="color: red;">List of available time at <%= pickup_date %></h4>
+                            <div class="number-container">
+                              <% available_time_date.forEach(time => { %>
+                              <div class="number-box"><%= time %></div>
+                              <% }) %>
+                              <!-- Add more values as needed -->
                           </div>
+                          <% } %>
+                          </div>
+
                       </div>
                   </div>
             </div>

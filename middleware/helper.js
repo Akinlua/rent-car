@@ -81,7 +81,6 @@ const pagination = async (result, count, req, res) => {
     return inputTime >= startTime && inputTime <= endTime;
   }
 
-
   function addDaysToDate(originalDate, numberOfDays) {
     // Parse the originalDate string to obtain a Date object
     var dateObject = new Date(originalDate);
@@ -89,16 +88,15 @@ const pagination = async (result, count, req, res) => {
     // Add numberOfDays to the date
     dateObject.setDate(dateObject.getDate() + numberOfDays);
   
-    // Format the result as mm/dd/yyyy
+    // Format the result as m/d/yyyy
     var formattedResult = (
-      (dateObject.getMonth() + 1).toString().padStart(2, '0') + '/' +
-      dateObject.getDate().toString().padStart(2, '0') + '/' +
+      (dateObject.getMonth() + 1) + '/' +
+      dateObject.getDate() + '/' +
       dateObject.getFullYear()
     );
   
     return formattedResult;
   }
-
   function addHoursToTime(originalTime, numberOfHours) {
     // Parse the originalTime string to obtain a Date object
     var timeObject = new Date('01/01/2000 ' + originalTime);
@@ -113,6 +111,18 @@ const pagination = async (result, count, req, res) => {
     );
   
     return formattedResult;
+  }
+  function hours_in_a_day() {
+    const hoursInDay = [];
+
+    for (let hour = 0; hour < 24; hour++) {
+      const formattedHour = hour.toString().padStart(2, '0');
+      const time = `${formattedHour}:00`;
+
+      hoursInDay.push(time);
+    }
+
+    return hoursInDay
   }
   
   const getDate = async () => {
@@ -154,11 +164,41 @@ const pagination = async (result, count, req, res) => {
     return value;
   };
 
+  function getDatesBetween(startDateStr, endDateStr) {
+    const dates = [];
+    let currentDate = new Date(startDateStr);
+  
+    const endDate = new Date(endDateStr);
+  
+    while (currentDate <= endDate) {
+      const formattedDate = `${currentDate.getMonth() + 1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
+      dates.push(formattedDate);
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+  
+    return dates;
+  }
+
+  function todayDate() {
+    const currentDate = new Date();
+
+    const month = currentDate.getMonth() + 1; // Months are zero-based, so we add 1
+    const day = currentDate.getDate();
+    const year = currentDate.getFullYear();
+
+    const formattedDate = `${month}/${day}/${year}`;
+
+    return formattedDate
+  }
+
+  
   module.exports = {
     pagination, 
     isDateWithinRange,
     isTimeWithinRange,
     addDaysToDate,
     addHoursToTime, getDate,
-    changeToInt
+    changeToInt,
+    getDatesBetween,hours_in_a_day,
+    todayDate
   }

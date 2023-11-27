@@ -1,3 +1,4 @@
+
  AOS.init({
  	duration: 800,
  	easing: 'slide'
@@ -314,10 +315,32 @@
   });
 
 
-	$('#book_pick_date,#book_off_date').datepicker({
+	$('#book_pick_date2').datepicker({
 	  'format': 'm/d/yyyy',
-	  'autoclose': true
+	  'autoclose': true,
 	});
+
+	console.log("ertyhtrer", disable_dates, typeof disable_dates)
+	const new_list = disable_dates.split(',')
+	console.log("ertyhtrer", new_list, typeof new_list)
+
+	$('#book_pick_date, #book_off_date').datepicker({
+		format: 'm/d/yyyy',
+		autoclose: true,
+		beforeShowDay: function(date) {
+		  // Define an array of disabled dates (format: 'mm/dd/yyyy')
+		  var disabledDates =new_list;
+	  
+		  // Convert the date to a string in 'mm/dd/yyyy' format
+		  var dateString = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+		  // Check if the date is in the array of disabled dates
+		  if ($.inArray(dateString, disabledDates) !== -1) {
+			return false; // Disable the date
+		  }
+		  return true; // Enable the date
+		}
+	  });
+	  
 	$('#time_pick').timepicker();
 
 

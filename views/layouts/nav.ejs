@@ -25,9 +25,11 @@
     <link rel="stylesheet" href="../../css/flaticon.css">
     <link rel="stylesheet" href="../../css/icomoon.css">
     <link rel="stylesheet" href="../../css/style.css">
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
 
     <script>
       var stripePublickey = '<%= stripePublickey%>'
+
   </script>
   </head>
   <body>
@@ -167,5 +169,16 @@
   <script src="../../js/google-map.js"></script>
   <script src="../../js/main.js"></script>
     
+<!--   
+  <script>
+      const disabledDates = ['2023-11-28', '2023-11-29'];
+
+      flatpickr('#datePicker_', {
+        minDate: 'today',
+        maxDate: '2023-12-31',
+        disable: disabledDates
+      });
+  </script> -->
+
   </body>
 </html>
