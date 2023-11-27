@@ -2,6 +2,7 @@ require('dotenv').config()
 require('express-async-errors');
 const express = require('express')
 const expressLayout = require('express-ejs-layouts')
+const session = require('express-session');
 
 const bodyParser = require('body-parser')
 const connectDB = require('./db/connect')
@@ -20,6 +21,19 @@ const app = express()
 
 app.use(bodyParser.json())
 
+app.use(session({
+    secret: 'your-secret-key',
+    resave: true,
+    saveUninitialized: true
+  }));
+
+// app.use((req, res, next) => {
+//     if (req.method === 'GET') {
+//         req.prevPage = req.get('referer') || '/';
+//       }
+//       next();
+// });
+  
 
 app.use(expressLayout)
 app.set('layout', './layouts/index')
@@ -36,7 +50,6 @@ app.use('', mainRouter)
 //error handler
 app.use(errorHandlerMiddleware);
 app.use(notFoundMiddleware);
-
 
 
 

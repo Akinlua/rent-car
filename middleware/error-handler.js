@@ -1,12 +1,14 @@
 const noLayout = '../views/layouts/nothing.ejs'
 const { StatusCodes } = require('http-status-codes')
 const multer = require('multer')
+const jwt = require('jsonwebtoken')
+
 // const {allPages} = require('../controllers/main')
 const stripePublickey = process.env.STRIPE_PUBLIC_KEY
 
 const errorHandlerMiddleware = async (err, req, res, next) => {
     
-    console.log(err)
+    console.log(err.message)
     if (err.message === 'Only Images Allowed')  {
       let error = "Invalid file type. Only Images are allowed"
       return res.render('error-500', {layout: noLayout, name: "Error Uploading file", message: error, statusCode: 400})
@@ -20,6 +22,11 @@ const errorHandlerMiddleware = async (err, req, res, next) => {
       } else {
         return res.render('error-500', {layout: noLayout, name: "Error Uploading file", message: err.message, statusCode: 400})
       }
+    }
+
+    if(err instanceof jwt.JsonWebTokenError){
+      res.clearCookie('token');
+      return res.redirect('/login')
     }
 
     let customError = {

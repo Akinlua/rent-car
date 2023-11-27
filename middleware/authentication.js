@@ -6,6 +6,8 @@ const noLayout = '../views/layouts/nothing.ejs'
 
 const authMiddleware = async (req, res, next ) => {
   try {
+    
+    req.session.referer = req.originalUrl
     const token = req.cookies.token;
   
     if(!token) {
@@ -22,6 +24,12 @@ const authMiddleware = async (req, res, next ) => {
     req.userId = decoded.userId;
     next();
   } catch(error) {
+    console.log(error)
+    req.session.referer = req.originalUrl
+    if(error instanceof jwt.JsonWebTokenError){
+      res.clearCookie('token');
+      return res.redirect('/login')
+    }
     return res.redirect('/login')
   }
 

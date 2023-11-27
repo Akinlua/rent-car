@@ -2,10 +2,11 @@
 
 const noLayout = '../views/layouts/nothing.ejs' 
 const navLayout = '../views/layouts/nav.ejs'
+const adminLayout = '../views/layouts/admin.ejs'
 const jwt = require('jsonwebtoken')
 const User = require('../model/User')
 const Car = require('../model/car')
-const {pagination, isDateWithinRange, isTimeWithinRange, addDaysToDate, addHoursToTime, getDate} = require('../middleware/helper')
+const {pagination, isDateWithinRange, isTimeWithinRange, addDaysToDate, addHoursToTime, getDate, changeToInt} = require('../middleware/helper')
 const Form = require('../model/Form')
 const {auth} = require('../middleware/authentication')
 
@@ -35,6 +36,10 @@ const CheckAuth = async (req, res) => {
         return {is_user: is_user, is_admin}
     }  catch (error) {
         console.log(error)
+        if(error instanceof jwt.JsonWebTokenError){
+            res.clearCookie('token');
+            return res.redirect('/login')
+        }
         return {is_user: false, is_admin}
     }
 
@@ -81,7 +86,6 @@ const cars = async (req, res) => {
     //get user
     const userId = await auth(req, res)
     const user = await User.findById(userId)
-    console.log(user) 
 
     res.render('cars', {
         is_admin, is_user,
@@ -172,9 +176,18 @@ const rent = async (req, res) => {
 
     let error, pickup_loc, type, type_rate, pickup_date, dropoff_loc, pickup_time = ""
 
-    if(req.query.typeR){
-        type = req.query.typeR
+    if(req.session.formData){
+        const storedData = req.session.formData
+        pickup_loc = storedData.pickup_loc
+        type = storedData.type
+        type_rate = storedData.type_rate
+        pickup_date = storedData.pickup_date
+        dropoff_loc = storedData.dropoff_loc
+        pickup_time = storedData.pickup_time
+        delete req.session.formData;
     }
+    
+    if(req.query.typeR) type = req.query.typeR
     if(req.query.type) type = req.query.type
     if(req.query.pickup_loc) pickup_loc = req.query.pickup_loc
     if(req.query.type_rate) type_rate = req.query.type_rate
@@ -213,6 +226,17 @@ const postRent = async (req, res) => {
         })
     }
     try {
+        if(type_rate < 1) {
+            let error = "Length of use can't be less than 1"
+            return res.render('rent', {
+                is_admin, is_user,
+                title: "Rent",
+                layout: navLayout,
+                stripePublickey, car,error: error, 
+                pickup_loc, type, type_rate, 
+                pickup_date, dropoff_loc, pickup_time
+            })
+        }
 
         //convert to integer
         type_rate = Math.floor(type_rate)
@@ -569,18 +593,68 @@ const deleteCar = async (req, res) => {
 
 const adminPage = async (req, res) => {
 
-    const forms = await Form.find({})
-
     const user = await User.findById(req.userId)
+    let forms;
+    if(req.query.search) {
+        let search = req.query.search
+        let searchValue = await changeToInt(search)
+        let result = await Form.find({
+            $or: [
+                {name: {$regex: search, $options: 'i'}},
+                {car: {$regex: search, $options: 'i'}},
+                {pickup_loc: {$regex: search, $options: 'i'}},
+                {dropoff_loc: {$regex: search, $options: 'i'}},
+                {type: {$regex: search, $options: 'i'}},
+                {dropoff_date: {$regex: search, $options: 'i'}},
+                {pickup_date: {$regex: search, $options: 'i'}},
+                {dropoff_time: {$regex: search, $options: 'i'}},
+                {pickup_time: {$regex: search, $options: 'i'}},
+                {date: {$regex: search, $options: 'i'}},
+                {type_rate: searchValue},
+                {total_charge: searchValue},
+            ]
+        }).sort('-createdAt')
+        forms = result
+    } else {
+        let result = await Form.find({}).sort('-createdAt')
+        forms = result
+    }
 
     res.render('admin/index', {
         title: "Admin",
-        layout: noLayout,forms, user
+        layout: adminLayout,forms, user
     })
+}
+
+const search = async (req, res) => {
+    const {search} = req.body
+    res.redirect(`/admin?search=${search}`)
+}
+
+const allUsers = async (req, res) => {
+    const user = await User.findById(req.userId)
+    const users = await User.find({})
+
+    res.render('admin/users', {
+        title: "Users Page",
+        layout: adminLayout,users, user
+    })
+}
+
+const temp_Form = async ( req, res) => {
+    const {pickup_loc, type, type_rate, pickup_date, dropoff_loc, pickup_time,} = req.body;
+
+    // Store the data in the session
+    req.session.formData = {pickup_loc, type, type_rate, pickup_date, dropoff_loc, pickup_time,};
+
+    // console.log(req.session.formData)
+
+    res.redirect('/car')
+  
 }
 module.exports ={
     home, about, cars, pricing, contact, 
     rent,postCarPage,postCar, editCarPage,
     editCar, deleteCar, postRent,singleCar, rented,
-    adminPage
+    adminPage, search, allUsers, temp_Form
 }

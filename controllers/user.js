@@ -19,6 +19,9 @@ const loginPage = async (req, res) => {
         return res.redirect('/')
     }
     let error_ = ''
+// Save the referer (the page the user came from) in the session
+    req.session.prevPage =req.get('referer')  || '/';
+
     res.render('user/login', {layout: noLayout, error: error_})
 }
 
@@ -83,7 +86,8 @@ const postLogin = async (req, res) => {
     //     return res.redirect('/user-items')
     // }
 
-    res.redirect('/')
+    const redirectUrl = req.session.referer || req.session.prevPage || '/';
+    res.redirect(redirectUrl)
 }
 
 

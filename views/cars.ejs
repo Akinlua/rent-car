@@ -97,6 +97,11 @@
             <% }) %>
               
           </div>
+          <% if (user != null) { %>
+          <% if (user.admin == true) { %>
+            <a href="/post-car" class="btn btn-primary py-3 px-5">Post a new Car</a>
+          <% } %>
+          <% } %>
           <div class="row mt-5">
         
         <% if (noOfPages > 1) { %>

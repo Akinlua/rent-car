@@ -145,10 +145,20 @@ const pagination = async (result, count, req, res) => {
     return formattedDate;
   };
 
+  const changeToInt = async (value, req, res) => {
+    value = await Number(value);
+    if (isNaN(value)) {
+      value = -1234567890987654345678;
+    }
+  
+    return value;
+  };
+
   module.exports = {
     pagination, 
     isDateWithinRange,
     isTimeWithinRange,
     addDaysToDate,
-    addHoursToTime, getDate
+    addHoursToTime, getDate,
+    changeToInt
   }
